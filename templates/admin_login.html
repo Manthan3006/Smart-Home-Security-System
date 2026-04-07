@@ -1,0 +1,213 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Login - Premium Attendance System{% endblock %}
+
+{% block content %}
+<div class="login-container">
+    <div class="glass-card login-card">
+        <!-- Header -->
+        <div class="login-header">
+            <div class="logo-container">
+                <i class="fas fa-shield-alt logo-icon"></i>
+                <h1>Admin Access</h1>
+            </div>
+            <p class="login-subtitle">Secure Dashboard Login</p>
+        </div>
+        
+        <!-- Login Form -->
+        <form id="login-form" class="login-form" onsubmit="return handleLogin(event)">
+            <div class="form-group">
+                <label for="password">
+                    <i class="fas fa-lock"></i>
+                    Admin Password
+                </label>
+                <input 
+                    type="password" 
+                    id="password" 
+                    name="password" 
+                    placeholder="Enter your admin password"
+                    required
+                    autocomplete="current-password"
+                >
+            </div>
+            
+            <button type="submit" class="glass-button primary-button login-button" id="login-btn">
+                <i class="fas fa-sign-in-alt"></i>
+                <span>Login to Dashboard</span>
+            </button>
+        </form>
+        
+        <!-- Error Message -->
+        <div id="error-message" class="error-message" style="display: none;">
+            <i class="fas fa-exclamation-triangle"></i>
+            <span id="error-text">Invalid password. Please try again.</span>
+        </div>
+        
+        <!-- Default Credentials Info -->
+        <div class="credentials-info">
+            <div class="info-box">
+                <i class="fas fa-info-circle"></i>
+                <div class="info-content">
+                    <strong>Default Credentials</strong>
+                    <p>Password: <code>admin123</code></p>
+                    <small>Change this password after first login</small>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Back to Home -->
+        <div class="back-section">
+            <a href="/" class="back-link">
+                <i class="fas fa-arrow-left"></i>
+                Back to Home
+            </a>
+        </div>
+    </div>
+    
+    <!-- Security Features -->
+    <div class="security-features">
+        <div class="feature-item">
+            <i class="fas fa-lock"></i>
+            <span>Encrypted Authentication</span>
+        </div>
+        <div class="feature-item">
+            <i class="fas fa-user-shield"></i>
+            <span>Role-based Access</span>
+        </div>
+        <div class="feature-item">
+            <i class="fas fa-history"></i>
+            <span>Session Management</span>
+        </div>
+    </div>
+    
+    <!-- Background Animation -->
+    <div class="background-animation">
+        <div class="floating-shape shape-1"></div>
+        <div class="floating-shape shape-2"></div>
+    </div>
+</div>
+
+<script>
+// Inline JavaScript that will definitely work
+console.log('🔐 Admin login script loaded');
+
+function handleLogin(event) {
+    event.preventDefault();
+    console.log('🔐 Login form submitted');
+    
+    const passwordInput = document.getElementById('password');
+    const loginButton = document.getElementById('login-btn');
+    const errorMessage = document.getElementById('error-message');
+    
+    const password = passwordInput.value.trim();
+    
+    if (!password) {
+        showError('Please enter a password');
+        return false;
+    }
+    
+    console.log('🔐 Password entered, attempting login...');
+    
+    // Show loading state
+    const originalContent = loginButton.innerHTML;
+    loginButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> <span>Logging in...</span>';
+    loginButton.disabled = true;
+    
+    // Hide error message
+    errorMessage.style.display = 'none';
+    
+    // Send login request
+    fetch('/api/admin/login', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ password: password })
+    })
+    .then(function(response) {
+        console.log('🔐 Response received:', response.status);
+        return response.json();
+    })
+    .then(function(data) {
+        console.log('🔐 Response data:', data);
+        
+        if (data.success) {
+            console.log('✅ Login successful!');
+            
+            // Show success state
+            loginButton.innerHTML = '<i class="fas fa-check"></i> <span>Success!</span>';
+            loginButton.style.background = 'rgba(63, 185, 80, 0.3)';
+            
+            console.log('🔄 Redirecting to dashboard...');
+            
+            // Redirect immediately
+            window.location.href = '/admin/dashboard';
+            
+        } else {
+            console.log('❌ Login failed:', data.message);
+            showError(data.message || 'Invalid password. Please try again.');
+            resetButton(originalContent);
+        }
+    })
+    .catch(function(error) {
+        console.error('❌ Login error:', error);
+        showError('Connection error. Please try again.');
+        resetButton(originalContent);
+    });
+    
+    return false;
+}
+
+function showError(message) {
+    console.log('⚠️ Showing error:', message);
+    const errorMessage = document.getElementById('error-message');
+    const errorText = document.getElementById('error-text');
+    const passwordInput = document.getElementById('password');
+    
+    if (errorText) errorText.textContent = message;
+    if (errorMessage) errorMessage.style.display = 'flex';
+    if (passwordInput) {
+        passwordInput.classList.add('error');
+        passwordInput.select();
+    }
+}
+
+function resetButton(originalContent) {
+    const loginButton = document.getElementById('login-btn');
+    const passwordInput = document.getElementById('password');
+    
+    loginButton.innerHTML = originalContent;
+    loginButton.disabled = false;
+    loginButton.style.background = '';
+    
+    if (passwordInput) {
+        passwordInput.value = '';
+        passwordInput.focus();
+    }
+}
+
+// Focus on password input when page loads
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('🔐 DOM loaded, focusing password input');
+    const passwordInput = document.getElementById('password');
+    if (passwordInput) {
+        passwordInput.focus();
+    }
+});
+
+// Clear error when user starts typing
+document.addEventListener('DOMContentLoaded', function() {
+    const passwordInput = document.getElementById('password');
+    const errorMessage = document.getElementById('error-message');
+    
+    if (passwordInput) {
+        passwordInput.addEventListener('input', function() {
+            if (errorMessage) errorMessage.style.display = 'none';
+            passwordInput.classList.remove('error');
+        });
+    }
+});
+
+console.log('🔐 Admin login script initialization complete');
+</script>
+{% endblock %}

@@ -1,0 +1,39 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# Virtual environments
+venv/
+env/
+.env/
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Attendance records (optional - remove if you want to track these)
+attendance_records/*.csv
+
+# Admin config (contains password hash - keep private)
+admin_config.json
+
+# Test files
+test_gps_integration.py
+test_gps_browser.js
+run_https_server.py
+GPS_INTEGRATION_README.md

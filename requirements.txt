@@ -1,0 +1,26 @@
+# Premium Attendance System Requirements
+
+# Core UI Framework
+customtkinter>=5.2.0
+tkinter
+
+# Computer Vision & Face Recognition
+opencv-python>=4.8.0
+face-recognition>=1.3.0
+dlib>=19.24.0
+numpy>=1.24.0
+Pillow>=10.0.0
+
+# Data Analysis & Visualization
+pandas>=2.0.0
+matplotlib>=3.7.0
+seaborn>=0.12.0
+plotly>=5.15.0
+
+# Additional Dependencies
+hashlib2
+json5
+datetime
+threading
+os-sys
+csv

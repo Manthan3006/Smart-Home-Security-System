@@ -1,0 +1,389 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Dashboard - Premium Attendance System{% endblock %}
+
+{% block extra_css %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    <!-- Header -->
+    <div class="dashboard-header">
+        <div class="header-content">
+            <h1><i class="fas fa-chart-line"></i> Admin Dashboard</h1>
+            <div class="header-actions">
+                <a href="/admin/employee_stats" class="glass-button secondary-button">
+                    <i class="fas fa-users"></i> Employee Stats
+                </a>
+                <button id="logout-btn" class="glass-button danger-button">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Stats Cards -->
+    <div class="stats-grid">
+        <div class="glass-card stat-card">
+            <div class="stat-icon blue">
+                <i class="fas fa-calendar-day"></i>
+            </div>
+            <div class="stat-content">
+                <h3 id="today-total">{{ stats.today_total }}</h3>
+                <p>Today's Total</p>
+            </div>
+        </div>
+        
+        <div class="glass-card stat-card">
+            <div class="stat-icon green">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <div class="stat-content">
+                <h3 id="today-present">{{ stats.today_present }}</h3>
+                <p>Present Today</p>
+            </div>
+        </div>
+        
+        <div class="glass-card stat-card">
+            <div class="stat-icon orange">
+                <i class="fas fa-clock"></i>
+            </div>
+            <div class="stat-content">
+                <h3 id="today-late">{{ stats.today_late }}</h3>
+                <p>Late Today</p>
+            </div>
+        </div>
+        
+        <div class="glass-card stat-card">
+            <div class="stat-icon purple">
+                <i class="fas fa-users"></i>
+            </div>
+            <div class="stat-content">
+                <h3 id="total-employees">{{ stats.total_employees }}</h3>
+                <p>Total Employees</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Charts Section -->
+    <div class="charts-section">
+        <!-- Today's Attendance Chart -->
+        <div class="glass-card chart-card">
+            <div class="chart-header">
+                <h3><i class="fas fa-pie-chart"></i> Today's Attendance</h3>
+                <div class="chart-controls">
+                    <button class="chart-btn active" data-chart="pie">Pie</button>
+                    <button class="chart-btn" data-chart="doughnut">Doughnut</button>
+                </div>
+            </div>
+            <div class="chart-container">
+                <canvas id="todayChart"></canvas>
+            </div>
+        </div>
+        
+        <!-- Weekly Trend Chart -->
+        <div class="glass-card chart-card">
+            <div class="chart-header">
+                <h3><i class="fas fa-chart-line"></i> Weekly Attendance Trend</h3>
+                <div class="chart-controls">
+                    <button class="chart-btn active" data-chart="line">Line</button>
+                    <button class="chart-btn" data-chart="bar">Bar</button>
+                </div>
+            </div>
+            <div class="chart-container">
+                <canvas id="weeklyChart"></canvas>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Recent Activity -->
+    <div class="activity-section">
+        <div class="glass-card activity-card">
+            <div class="activity-header">
+                <h3><i class="fas fa-history"></i> Recent Activity</h3>
+                <button id="refresh-activity" class="glass-button small-button">
+                    <i class="fas fa-sync-alt"></i> Refresh
+                </button>
+            </div>
+            <div class="activity-list" id="activity-list">
+                <div class="activity-item">
+                    <div class="activity-icon success">
+                        <i class="fas fa-check"></i>
+                    </div>
+                    <div class="activity-content">
+                        <p><strong>System Started</strong></p>
+                        <small>Dashboard loaded successfully</small>
+                    </div>
+                    <div class="activity-time">
+                        <span id="current-time">--:--</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Recent Attendance with GPS -->
+        <div class="glass-card attendance-card">
+            <div class="attendance-header">
+                <h3><i class="fas fa-map-marker-alt"></i> Recent Attendance (GPS)</h3>
+                <button id="refresh-attendance" class="glass-button small-button">
+                    <i class="fas fa-sync-alt"></i> Refresh
+                </button>
+            </div>
+            <div class="attendance-list" id="attendance-list">
+                <div class="loading-message">Loading attendance records...</div>
+            </div>
+        </div>
+        
+        <!-- Quick Actions -->
+        <div class="glass-card actions-card">
+            <h3><i class="fas fa-bolt"></i> Quick Actions</h3>
+            <div class="actions-grid">
+                <button class="action-btn" onclick="exportData()">
+                    <i class="fas fa-download"></i>
+                    <span>Export Data</span>
+                </button>
+                <button class="action-btn" onclick="refreshStats()">
+                    <i class="fas fa-sync-alt"></i>
+                    <span>Refresh Stats</span>
+                </button>
+                <button class="action-btn" onclick="viewReports()">
+                    <i class="fas fa-file-alt"></i>
+                    <span>View Reports</span>
+                </button>
+                <button class="action-btn" onclick="systemSettings()">
+                    <i class="fas fa-cog"></i>
+                    <span>Settings</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+let todayChart, weeklyChart;
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize charts
+    initializeCharts();
+    
+    // Update time
+    updateTime();
+    setInterval(updateTime, 1000);
+    
+    // Logout functionality
+    document.getElementById('logout-btn').addEventListener('click', logout);
+    
+    // Refresh functionality
+    document.getElementById('refresh-activity').addEventListener('click', refreshActivity);
+    
+    // Chart controls
+    document.querySelectorAll('.chart-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const chartType = this.dataset.chart;
+            const chartContainer = this.closest('.chart-card');
+            
+            // Update active state
+            chartContainer.querySelectorAll('.chart-btn').forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+            
+            // Update chart (implement chart switching logic here)
+        });
+    });
+});
+
+function initializeCharts() {
+    // Today's Attendance Pie Chart
+    const todayCtx = document.getElementById('todayChart').getContext('2d');
+    todayChart = new Chart(todayCtx, {
+        type: 'pie',
+        data: {
+            labels: ['Present', 'Late', 'Absent'],
+            datasets: [{
+                data: [{{ stats.today_present }}, {{ stats.today_late }}, {{ stats.total_employees - stats.today_total }}],
+                backgroundColor: [
+                    'rgba(63, 185, 80, 0.8)',
+                    'rgba(210, 153, 34, 0.8)',
+                    'rgba(248, 81, 73, 0.8)'
+                ],
+                borderColor: [
+                    'rgba(63, 185, 80, 1)',
+                    'rgba(210, 153, 34, 1)',
+                    'rgba(248, 81, 73, 1)'
+                ],
+                borderWidth: 2
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: {
+                        color: '#ffffff',
+                        padding: 20,
+                        font: {
+                            size: 12
+                        }
+                    }
+                }
+            }
+        }
+    });
+    
+    // Weekly Trend Line Chart
+    const weeklyCtx = document.getElementById('weeklyChart').getContext('2d');
+    const weeklyData = {{ stats.daily_data | tojson }};
+    
+    weeklyChart = new Chart(weeklyCtx, {
+        type: 'line',
+        data: {
+            labels: weeklyData.map(d => d.date),
+            datasets: [{
+                label: 'Present',
+                data: weeklyData.map(d => d.present),
+                borderColor: 'rgba(63, 185, 80, 1)',
+                backgroundColor: 'rgba(63, 185, 80, 0.1)',
+                tension: 0.4,
+                fill: true
+            }, {
+                label: 'Late',
+                data: weeklyData.map(d => d.late),
+                borderColor: 'rgba(210, 153, 34, 1)',
+                backgroundColor: 'rgba(210, 153, 34, 0.1)',
+                tension: 0.4,
+                fill: true
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    labels: {
+                        color: '#ffffff'
+                    }
+                }
+            },
+            scales: {
+                x: {
+                    ticks: {
+                        color: '#ffffff'
+                    },
+                    grid: {
+                        color: 'rgba(255, 255, 255, 0.1)'
+                    }
+                },
+                y: {
+                    ticks: {
+                        color: '#ffffff'
+                    },
+                    grid: {
+                        color: 'rgba(255, 255, 255, 0.1)'
+                    }
+                }
+            }
+        }
+    });
+}
+
+function updateTime() {
+    const now = new Date();
+    const timeString = now.toLocaleTimeString();
+    document.getElementById('current-time').textContent = timeString;
+}
+
+function logout() {
+    fetch('/api/admin/logout', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            window.location.href = '/';
+        }
+    })
+    .catch(error => {
+        console.error('Logout error:', error);
+        // Redirect anyway
+        window.location.href = '/';
+    });
+}
+
+function refreshActivity() {
+    // Add refresh animation
+    const refreshBtn = document.getElementById('refresh-activity');
+    const icon = refreshBtn.querySelector('i');
+    icon.classList.add('fa-spin');
+    
+    setTimeout(() => {
+        icon.classList.remove('fa-spin');
+        // Add new activity item
+        addActivityItem('Data Refreshed', 'Latest statistics updated', 'info');
+    }, 1000);
+}
+
+function addActivityItem(title, description, type) {
+    const activityList = document.getElementById('activity-list');
+    const now = new Date().toLocaleTimeString();
+    
+    const activityItem = document.createElement('div');
+    activityItem.className = 'activity-item';
+    activityItem.innerHTML = `
+        <div class="activity-icon ${type}">
+            <i class="fas fa-${type === 'success' ? 'check' : type === 'info' ? 'info' : 'exclamation'}"></i>
+        </div>
+        <div class="activity-content">
+            <p><strong>${title}</strong></p>
+            <small>${description}</small>
+        </div>
+        <div class="activity-time">
+            <span>${now}</span>
+        </div>
+    `;
+    
+    activityList.insertBefore(activityItem, activityList.firstChild);
+}
+
+function refreshStats() {
+    fetch('/api/dashboard_stats')
+    .then(response => response.json())
+    .then(data => {
+        // Update stat cards
+        document.getElementById('today-total').textContent = data.today_total;
+        document.getElementById('today-present').textContent = data.today_present;
+        document.getElementById('today-late').textContent = data.today_late;
+        document.getElementById('total-employees').textContent = data.total_employees;
+        
+        // Update charts
+        todayChart.data.datasets[0].data = [data.today_present, data.today_late, data.total_employees - data.today_total];
+        todayChart.update();
+        
+        addActivityItem('Stats Refreshed', 'Dashboard statistics updated', 'success');
+    })
+    .catch(error => {
+        console.error('Error refreshing stats:', error);
+        addActivityItem('Refresh Failed', 'Could not update statistics', 'error');
+    });
+}
+
+function exportData() {
+    addActivityItem('Export Started', 'Preparing attendance data for download', 'info');
+    // Implement export functionality
+}
+
+function viewReports() {
+    addActivityItem('Reports Accessed', 'Viewing detailed attendance reports', 'info');
+    // Implement reports functionality
+}
+
+function systemSettings() {
+    addActivityItem('Settings Opened', 'Accessing system configuration', 'info');
+    // Implement settings functionality
+}
+</script>
+{% endblock %}

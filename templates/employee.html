@@ -1,0 +1,225 @@
+{% extends "base.html" %}
+
+{% block title %}Employee Attendance - Premium Attendance System{% endblock %}
+
+{% block content %}
+<div class="employee-container">
+    <!-- Header -->
+    <div class="page-header">
+        <div class="header-content">
+            <h1><i class="fas fa-user"></i> Employee Attendance</h1>
+            <a href="/" class="back-button">
+                <i class="fas fa-arrow-left"></i> Back to Home
+            </a>
+        </div>
+    </div>
+    
+    <!-- Camera Section -->
+    <div class="camera-section">
+        <div class="glass-card camera-card">
+            <div class="camera-header">
+                <h2><i class="fas fa-camera"></i> Live Camera Feed</h2>
+                <div class="camera-controls">
+                    <button id="start-camera" class="glass-button success-button">
+                        <i class="fas fa-play"></i> Start Camera
+                    </button>
+                    <button id="stop-camera" class="glass-button danger-button" style="display: none;">
+                        <i class="fas fa-stop"></i> Stop Camera
+                    </button>
+                </div>
+            </div>
+            
+            <div class="camera-container">
+                <div id="camera-placeholder" class="camera-placeholder">
+                    <i class="fas fa-camera camera-icon"></i>
+                    <p>Click "Start Camera" to begin face recognition</p>
+                    <small>Make sure you have good lighting for better recognition</small>
+                </div>
+                <img id="camera-feed" class="camera-feed" style="display: none;" />
+            </div>
+            
+            <!-- Recognition Status -->
+            <div class="recognition-status">
+                <div class="status-indicator" id="status-indicator">
+                    <i class="fas fa-circle status-dot"></i>
+                    <span id="status-text">Camera Inactive</span>
+                </div>
+                <div class="gps-indicator">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <span id="gps-status" class="gps-status gps-inactive">GPS Initializing...</span>
+                    <button id="retry-gps" class="retry-gps-btn" style="display: none;">
+                        <i class="fas fa-redo"></i> Retry
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- System Information -->
+    <div class="info-section">
+        <div class="glass-card info-card">
+            <h3><i class="fas fa-info-circle"></i> System Information</h3>
+            <div class="info-grid">
+                <div class="info-item">
+                    <i class="fas fa-clock"></i>
+                    <div class="info-content">
+                        <span class="info-label">Current Time</span>
+                        <span class="info-value" id="current-time">--:--:--</span>
+                    </div>
+                </div>
+                
+                <div class="info-item">
+                    <i class="fas fa-flag"></i>
+                    <div class="info-content">
+                        <span class="info-label">Reporting Time</span>
+                        <span class="info-value">10:00 AM</span>
+                    </div>
+                </div>
+                
+                <div class="info-item">
+                    <i class="fas fa-users"></i>
+                    <div class="info-content">
+                        <span class="info-label">Registered People</span>
+                        <span class="info-value" id="registered-people">Loading...</span>
+                    </div>
+                </div>
+                
+                <div class="info-item">
+                    <i class="fas fa-calendar-day"></i>
+                    <div class="info-content">
+                        <span class="info-label">Today's Date</span>
+                        <span class="info-value" id="current-date">--/--/----</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Instructions -->
+        <div class="glass-card instructions-card">
+            <h3><i class="fas fa-lightbulb"></i> Instructions</h3>
+            <div class="instructions-list">
+                <div class="instruction-item">
+                    <i class="fas fa-check-circle"></i>
+                    <span>Position yourself in front of the camera</span>
+                </div>
+                <div class="instruction-item">
+                    <i class="fas fa-check-circle"></i>
+                    <span>Ensure good lighting on your face</span>
+                </div>
+                <div class="instruction-item">
+                    <i class="fas fa-check-circle"></i>
+                    <span>Look directly at the camera</span>
+                </div>
+                <div class="instruction-item">
+                    <i class="fas fa-check-circle"></i>
+                    <span>Wait for recognition confirmation</span>
+                </div>
+                <div class="instruction-item">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <span>Location is automatically recorded for attendance audit</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+let cameraActive = false;
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Update time
+    updateTime();
+    setInterval(updateTime, 1000);
+    
+    // Update date
+    updateDate();
+    
+    // Camera controls
+    document.getElementById('start-camera').addEventListener('click', startCamera);
+    document.getElementById('stop-camera').addEventListener('click', stopCamera);
+});
+
+function updateTime() {
+    const now = new Date();
+    const timeString = now.toLocaleTimeString();
+    document.getElementById('current-time').textContent = timeString;
+}
+
+function updateDate() {
+    const now = new Date();
+    const dateString = now.toLocaleDateString();
+    document.getElementById('current-date').textContent = dateString;
+}
+
+function startCamera() {
+    fetch('/api/start_camera', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            cameraActive = true;
+            document.getElementById('camera-placeholder').style.display = 'none';
+            document.getElementById('camera-feed').style.display = 'block';
+            document.getElementById('camera-feed').src = '/video_feed';
+            
+            document.getElementById('start-camera').style.display = 'none';
+            document.getElementById('stop-camera').style.display = 'inline-flex';
+            
+            updateStatus('Camera Active - Face Recognition Running', 'success');
+        }
+    })
+    .catch(error => {
+        console.error('Error starting camera:', error);
+        updateStatus('Error starting camera', 'error');
+    });
+}
+
+function stopCamera() {
+    fetch('/api/stop_camera', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            cameraActive = false;
+            document.getElementById('camera-feed').style.display = 'none';
+            document.getElementById('camera-placeholder').style.display = 'flex';
+            
+            document.getElementById('stop-camera').style.display = 'none';
+            document.getElementById('start-camera').style.display = 'inline-flex';
+            
+            updateStatus('Camera Inactive', 'inactive');
+        }
+    })
+    .catch(error => {
+        console.error('Error stopping camera:', error);
+    });
+}
+
+function updateStatus(text, type) {
+    const statusText = document.getElementById('status-text');
+    const statusDot = document.querySelector('.status-dot');
+    
+    statusText.textContent = text;
+    
+    // Remove existing classes
+    statusDot.classList.remove('status-success', 'status-error', 'status-inactive');
+    
+    // Add new class
+    if (type === 'success') {
+        statusDot.classList.add('status-success');
+    } else if (type === 'error') {
+        statusDot.classList.add('status-error');
+    } else {
+        statusDot.classList.add('status-inactive');
+    }
+}
+</script>
+{% endblock %}

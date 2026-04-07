@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+
+{% block title %}Premium Attendance System - Home{% endblock %}
+
+{% block content %}
+<div class="landing-container">
+    <div class="glass-card main-card">
+        <!-- Header -->
+        <div class="header-section">
+            <div class="logo-container">
+                <i class="fas fa-graduation-cap logo-icon"></i>
+                <h1 class="main-title">Premium Attendance System</h1>
+            </div>
+            <p class="subtitle">Modern Face Recognition • Real-time Analytics • Secure Access</p>
+        </div>
+        
+        <!-- Action Buttons -->
+        <div class="action-buttons">
+            <a href="/employee" class="glass-button primary-button">
+                <i class="fas fa-user"></i>
+                <span>Mark Attendance</span>
+                <small>Employee Mode</small>
+            </a>
+            
+            <a href="/admin/login" class="glass-button secondary-button">
+                <i class="fas fa-shield-alt"></i>
+                <span>Admin Dashboard</span>
+                <small>Analytics & Management</small>
+            </a>
+        </div>
+        
+        <!-- System Status -->
+        <div class="status-section">
+            <div class="status-card">
+                <i class="fas fa-clock"></i>
+                <div class="status-info">
+                    <span class="status-label">Reporting Time</span>
+                    <span class="status-value">10:00 AM</span>
+                </div>
+            </div>
+            
+            <div class="status-card">
+                <i class="fas fa-users"></i>
+                <div class="status-info">
+                    <span class="status-label">Registered</span>
+                    <span class="status-value" id="registered-count">Loading...</span>
+                </div>
+            </div>
+            
+            <div class="status-card">
+                <i class="fas fa-calendar-check"></i>
+                <div class="status-info">
+                    <span class="status-label">Today's Attendance</span>
+                    <span class="status-value" id="today-count">Loading...</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Features -->
+        <div class="features-section">
+            <h3>System Features</h3>
+            <div class="features-grid">
+                <div class="feature-item">
+                    <i class="fas fa-camera"></i>
+                    <span>Real-time Face Recognition</span>
+                </div>
+                <div class="feature-item">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Advanced Analytics</span>
+                </div>
+                <div class="feature-item">
+                    <i class="fas fa-lock"></i>
+                    <span>Secure Access Control</span>
+                </div>
+                <div class="feature-item">
+                    <i class="fas fa-mobile-alt"></i>
+                    <span>Responsive Design</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Background Animation -->
+    <div class="background-animation">
+        <div class="floating-shape shape-1"></div>
+        <div class="floating-shape shape-2"></div>
+        <div class="floating-shape shape-3"></div>
+    </div>
+</div>
+
+<script>
+// Load system stats
+document.addEventListener('DOMContentLoaded', function() {
+    // Simulate loading stats (replace with actual API call)
+    setTimeout(() => {
+        document.getElementById('registered-count').textContent = '4 People';
+        document.getElementById('today-count').textContent = '2 Marked';
+    }, 1000);
+});
+</script>
+{% endblock %}

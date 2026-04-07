@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login - Premium Attendance System</title>
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="app-container">
+        <div class="login-container">
+            <div class="glass-card login-card">
+                <!-- Header -->
+                <div class="login-header">
+                    <div class="logo-container">
+                        <i class="fas fa-shield-alt logo-icon"></i>
+                        <h1>Admin Access</h1>
+                    </div>
+                    <p class="login-subtitle">Secure Dashboard Login</p>
+                </div>
+                
+                <!-- Login Form -->
+                <form id="standalone-login-form" class="login-form">
+                    <div class="form-group">
+                        <label for="password">
+                            <i class="fas fa-lock"></i>
+                            Admin Password
+                        </label>
+                        <input 
+                            type="password" 
+                            id="password" 
+                            name="password" 
+                            placeholder="Enter your admin password"
+                            required
+                            autocomplete="current-password"
+                        >
+                    </div>
+                    
+                    <button type="submit" class="glass-button primary-button login-button" id="standalone-login-btn">
+                        <i class="fas fa-sign-in-alt"></i>
+                        <span>Login to Dashboard</span>
+                    </button>
+                </form>
+                
+                <!-- Error Message -->
+                <div id="standalone-error-message" class="error-message" style="display: none;">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <span id="standalone-error-text">Invalid password. Please try again.</span>
+                </div>
+                
+                <!-- Success Message -->
+                <div id="standalone-success-message" class="success-message" style="display: none;">
+                    <i class="fas fa-check-circle"></i>
+                    <span>Login successful! Redirecting...</span>
+                </div>
+                
+                <!-- Default Credentials Info -->
+                <div class="credentials-info">
+                    <div class="info-box">
+                        <i class="fas fa-info-circle"></i>
+                        <div class="info-content">
+                            <strong>Default Credentials</strong>
+                            <p>Password: <code>admin123</code></p>
+                            <small>Change this password after first login</small>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Back to Home -->
+                <div class="back-section">
+                    <a href="/" class="back-link">
+                        <i class="fas fa-arrow-left"></i>
+                        Back to Home
+                    </a>
+                </div>
+                
+                <!-- Debug Info -->
+                <div class="debug-info" style="margin-top: 20px; padding: 10px; background: rgba(255,255,255,0.05); border-radius: 5px; font-size: 12px;">
+                    <strong>Debug Info:</strong>
+                    <div id="debug-log"></div>
+                </div>
+            </div>
+            
+            <!-- Security Features -->
+            <div class="security-features">
+                <div class="feature-item">
+                    <i class="fas fa-lock"></i>
+                    <span>Encrypted Authentication</span>
+                </div>
+                <div class="feature-item">
+                    <i class="fas fa-user-shield"></i>
+                    <span>Role-based Access</span>
+                </div>
+                <div class="feature-item">
+                    <i class="fas fa-history"></i>
+                    <span>Session Management</span>
+                </div>
+            </div>
+            
+            <!-- Background Animation -->
+            <div class="background-animation">
+                <div class="floating-shape shape-1"></div>
+                <div class="floating-shape shape-2"></div>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .success-message {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 15px;
+            background: rgba(63, 185, 80, 0.2);
+            border: 1px solid rgba(63, 185, 80, 0.3);
+            border-radius: 8px;
+            color: #3FB950;
+            margin: 15px 0;
+        }
+        
+        .debug-info {
+            color: rgba(255, 255, 255, 0.7);
+        }
+    </style>
+
+    <script>
+        console.log('🔐 Standalone admin login page loaded');
+        
+        function debugLog(message) {
+            console.log(message);
+            const debugDiv = document.getElementById('debug-log');
+            if (debugDiv) {
+                debugDiv.innerHTML += '<br>' + new Date().toLocaleTimeString() + ': ' + message;
+            }
+        }
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            debugLog('DOM loaded, initializing standalone login');
+            
+            const loginForm = document.getElementById('standalone-login-form');
+            const passwordInput = document.getElementById('password');
+            const loginButton = document.getElementById('standalone-login-btn');
+            const errorMessage = document.getElementById('standalone-error-message');
+            const successMessage = document.getElementById('standalone-success-message');
+            
+            debugLog('Elements found - Form: ' + !!loginForm + ', Input: ' + !!passwordInput + ', Button: ' + !!loginButton);
+            
+            if (!loginForm || !passwordInput || !loginButton) {
+                debugLog('ERROR: Required elements not found!');
+                return;
+            }
+            
+            // Focus on password input
+            passwordInput.focus();
+            debugLog('Password input focused');
+            
+            // Handle form submission
+            loginForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                debugLog('Form submitted');
+                
+                const password = passwordInput.value.trim();
+                
+                if (!password) {
+                    showError('Please enter a password');
+                    return;
+                }
+                
+                debugLog('Attempting login with password: ' + password);
+                
+                // Show loading state
+                const originalContent = loginButton.innerHTML;
+                loginButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> <span>Logging in...</span>';
+                loginButton.disabled = true;
+                
+                // Hide previous messages
+                errorMessage.style.display = 'none';
+                successMessage.style.display = 'none';
+                
+                debugLog('Sending login request to /api/admin/login');
+                
+                // Send login request
+                fetch('/api/admin/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ password: password })
+                })
+                .then(response => {
+                    debugLog('Response received - Status: ' + response.status);
+                    return response.json();
+                })
+                .then(data => {
+                    debugLog('Response data: ' + JSON.stringify(data));
+                    
+                    if (data.success) {
+                        debugLog('Login successful! Showing success message');
+                        
+                        // Show success message
+                        successMessage.style.display = 'flex';
+                        loginButton.innerHTML = '<i class="fas fa-check"></i> <span>Success!</span>';
+                        loginButton.style.background = 'rgba(63, 185, 80, 0.3)';
+                        
+                        debugLog('Redirecting to dashboard in 2 seconds...');
+                        
+                        // Redirect after delay
+                        setTimeout(() => {
+                            debugLog('Redirecting now...');
+                            window.location.href = '/admin/dashboard';
+                        }, 2000);
+                        
+                    } else {
+                        debugLog('Login failed: ' + (data.message || 'Unknown error'));
+                        showError(data.message || 'Invalid password. Please try again.');
+                        resetButton(originalContent);
+                    }
+                })
+                .catch(error => {
+                    debugLog('Login error: ' + error.message);
+                    showError('Connection error. Please try again.');
+                    resetButton(originalContent);
+                });
+            });
+            
+            // Hide error message when user starts typing
+            passwordInput.addEventListener('input', function() {
+                errorMessage.style.display = 'none';
+                passwordInput.classList.remove('error');
+            });
+            
+            function showError(message) {
+                debugLog('Showing error: ' + message);
+                document.getElementById('standalone-error-text').textContent = message;
+                errorMessage.style.display = 'flex';
+                passwordInput.classList.add('error');
+                passwordInput.select();
+            }
+            
+            function resetButton(originalContent) {
+                loginButton.innerHTML = originalContent;
+                loginButton.disabled = false;
+                loginButton.style.background = '';
+                passwordInput.value = '';
+                passwordInput.focus();
+            }
+            
+            debugLog('Standalone login initialization complete');
+        });
+    </script>
+</body>
+</html>

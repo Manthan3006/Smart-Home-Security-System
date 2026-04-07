@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GPS Test - Attendance System</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #1a1a1a;
+            color: white;
+        }
+        .test-card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .status {
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .success { background: rgba(0, 255, 0, 0.2); }
+        .error { background: rgba(255, 0, 0, 0.2); }
+        .warning { background: rgba(255, 165, 0, 0.2); }
+        button {
+            background: rgba(79, 172, 254, 0.3);
+            border: 1px solid rgba(79, 172, 254, 0.5);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: rgba(79, 172, 254, 0.5);
+        }
+        #location-info {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>🧪 GPS Test Page</h1>
+    
+    <div class="test-card">
+        <h2>Browser GPS Test</h2>
+        <p>This page tests if your browser can access GPS location.</p>
+        
+        <button onclick="testGPS()">🌍 Test GPS</button>
+        <button onclick="testNetworkLocation()">📶 Test Network Location</button>
+        
+        <div id="gps-status" class="status">Click a button to test GPS</div>
+        <div id="location-info"></div>
+    </div>
+    
+    <div class="test-card">
+        <h2>Browser Information</h2>
+        <div id="browser-info"></div>
+    </div>
+    
+    <div class="test-card">
+        <h2>Troubleshooting Tips</h2>
+        <ul>
+            <li><strong>Chrome:</strong> Look for location icon in address bar, click and select "Always allow"</li>
+            <li><strong>Safari:</strong> Safari → Preferences → Websites → Location → Allow for this site</li>
+            <li><strong>Firefox:</strong> Click shield icon in address bar → Allow location access</li>
+            <li><strong>System:</strong> Make sure location services are enabled in your OS settings</li>
+            <li><strong>HTTPS:</strong> Some browsers require HTTPS for GPS (current: <span id="protocol"></span>)</li>
+        </ul>
+    </div>
+
+    <script>
+        // Display browser info
+        document.getElementById('browser-info').innerHTML = `
+            <p><strong>User Agent:</strong> ${navigator.userAgent}</p>
+            <p><strong>Geolocation Support:</strong> ${navigator.geolocation ? '✅ Yes' : '❌ No'}</p>
+            <p><strong>Protocol:</strong> ${window.location.protocol}</p>
+            <p><strong>Host:</strong> ${window.location.host}</p>
+        `;
+        
+        document.getElementById('protocol').textContent = window.location.protocol;
+        
+        function updateStatus(message, type) {
+            const status = document.getElementById('gps-status');
+            status.textContent = message;
+            status.className = `status ${type}`;
+        }
+        
+        function updateLocationInfo(position) {
+            const info = document.getElementById('location-info');
+            info.innerHTML = `
+                <h3>📍 Location Data:</h3>
+                <p><strong>Latitude:</strong> ${position.coords.latitude}</p>
+                <p><strong>Longitude:</strong> ${position.coords.longitude}</p>
+                <p><strong>Accuracy:</strong> ${position.coords.accuracy} meters</p>
+                <p><strong>Timestamp:</strong> ${new Date(position.timestamp).toLocaleString()}</p>
+                <p><strong>Google Maps:</strong> <a href="https://maps.google.com/?q=${position.coords.latitude},${position.coords.longitude}" target="_blank">View Location</a></p>
+            `;
+        }
+        
+        function testGPS() {
+            if (!navigator.geolocation) {
+                updateStatus('❌ Geolocation not supported by this browser', 'error');
+                return;
+            }
+            
+            updateStatus('🔄 Requesting high-accuracy GPS location...', 'warning');
+            
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    updateStatus('✅ GPS location acquired successfully!', 'success');
+                    updateLocationInfo(position);
+                },
+                (error) => {
+                    let message = '❌ GPS Error: ';
+                    switch(error.code) {
+                        case 1:
+                            message += 'Permission denied - Please allow location access';
+                            break;
+                        case 2:
+                            message += 'Position unavailable - Check device location settings';
+                            break;
+                        case 3:
+                            message += 'Request timeout - GPS took too long to respond';
+                            break;
+                        default:
+                            message += 'Unknown error';
+                    }
+                    updateStatus(message, 'error');
+                    console.error('GPS Error:', error);
+                },
+                {
+                    enableHighAccuracy: true,
+                    timeout: 15000,
+                    maximumAge: 0
+                }
+            );
+        }
+        
+        function testNetworkLocation() {
+            if (!navigator.geolocation) {
+                updateStatus('❌ Geolocation not supported by this browser', 'error');
+                return;
+            }
+            
+            updateStatus('🔄 Requesting network-based location...', 'warning');
+            
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    updateStatus('✅ Network location acquired successfully!', 'success');
+                    updateLocationInfo(position);
+                },
+                (error) => {
+                    let message = '❌ Network Location Error: ';
+                    switch(error.code) {
+                        case 1:
+                            message += 'Permission denied - Please allow location access';
+                            break;
+                        case 2:
+                            message += 'Position unavailable - Check internet connection';
+                            break;
+                        case 3:
+                            message += 'Request timeout - Network location took too long';
+                            break;
+                        default:
+                            message += 'Unknown error';
+                    }
+                    updateStatus(message, 'error');
+                    console.error('Network Location Error:', error);
+                },
+                {
+                    enableHighAccuracy: false,
+                    timeout: 10000,
+                    maximumAge: 300000
+                }
+            );
+        }
+        
+        // Auto-test on page load
+        setTimeout(() => {
+            testNetworkLocation();
+        }, 1000);
+    </script>
+</body>
+</html>

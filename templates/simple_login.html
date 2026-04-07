@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Admin Login</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #1a1a1a;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+        .login-box {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 40px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            text-align: center;
+            max-width: 400px;
+            width: 100%;
+        }
+        input {
+            width: 100%;
+            padding: 15px;
+            margin: 10px 0;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 5px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+        input::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+        button {
+            width: 100%;
+            padding: 15px;
+            background: rgba(79, 172, 254, 0.3);
+            border: 1px solid rgba(79, 172, 254, 0.5);
+            border-radius: 5px;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 10px 0;
+        }
+        button:hover {
+            background: rgba(79, 172, 254, 0.5);
+        }
+        .error {
+            background: rgba(255, 0, 0, 0.2);
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+            display: none;
+        }
+        .success {
+            background: rgba(0, 255, 0, 0.2);
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+            display: none;
+        }
+        .info {
+            background: rgba(79, 172, 254, 0.2);
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-box">
+        <h1>🔐 Simple Admin Login</h1>
+        <p>Simplified login for troubleshooting</p>
+        
+        <form id="simple-login-form">
+            <input type="password" id="password" placeholder="Enter admin password" required>
+            <button type="submit" id="login-btn">Login</button>
+        </form>
+        
+        <div id="error-msg" class="error"></div>
+        <div id="success-msg" class="success"></div>
+        
+        <div class="info">
+            <strong>Default Password:</strong> admin123<br>
+            <small>This is a simplified login page for testing</small>
+        </div>
+        
+        <p><a href="/" style="color: #4FACFE;">← Back to Home</a></p>
+        <p><a href="/admin/login" style="color: #4FACFE;">← Back to Regular Login</a></p>
+    </div>
+
+    <script>
+        document.getElementById('simple-login-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const password = document.getElementById('password').value;
+            const loginBtn = document.getElementById('login-btn');
+            const errorMsg = document.getElementById('error-msg');
+            const successMsg = document.getElementById('success-msg');
+            
+            // Hide previous messages
+            errorMsg.style.display = 'none';
+            successMsg.style.display = 'none';
+            
+            // Show loading
+            loginBtn.textContent = 'Logging in...';
+            loginBtn.disabled = true;
+            
+            console.log('Attempting login with password:', password);
+            
+            fetch('/api/admin/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ password: password })
+            })
+            .then(response => {
+                console.log('Response status:', response.status);
+                return response.json();
+            })
+            .then(data => {
+                console.log('Response data:', data);
+                
+                if (data.success) {
+                    successMsg.textContent = 'Login successful! Redirecting...';
+                    successMsg.style.display = 'block';
+                    
+                    setTimeout(() => {
+                        window.location.href = '/admin/dashboard';
+                    }, 1000);
+                } else {
+                    errorMsg.textContent = data.message || 'Login failed';
+                    errorMsg.style.display = 'block';
+                    
+                    loginBtn.textContent = 'Login';
+                    loginBtn.disabled = false;
+                }
+            })
+            .catch(error => {
+                console.error('Login error:', error);
+                errorMsg.textContent = 'Connection error: ' + error.message;
+                errorMsg.style.display = 'block';
+                
+                loginBtn.textContent = 'Login';
+                loginBtn.disabled = false;
+            });
+        });
+        
+        // Focus on password input
+        document.getElementById('password').focus();
+    </script>
+</body>
+</html>

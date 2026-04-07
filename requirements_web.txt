@@ -1,0 +1,21 @@
+# Premium Attendance System - Web Application Requirements
+
+# Core Web Framework
+Flask>=2.3.0
+Werkzeug>=2.3.0
+
+# Computer Vision & Face Recognition
+opencv-python>=4.8.0
+face-recognition>=1.3.0
+dlib>=19.24.0
+numpy>=1.24.0
+Pillow>=10.0.0
+
+# Data Analysis & Visualization
+pandas>=2.0.0
+matplotlib>=3.7.0
+seaborn>=0.12.0
+
+# Additional Dependencies
+python-dateutil>=2.8.0
+pytz>=2023.3

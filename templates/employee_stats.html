@@ -1,0 +1,454 @@
+{% extends "base.html" %}
+
+{% block title %}Employee Statistics - Premium Attendance System{% endblock %}
+
+{% block extra_css %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+{% endblock %}
+
+{% block content %}
+<div class="employee-stats-container">
+    <!-- Header -->
+    <div class="page-header">
+        <div class="header-content">
+            <h1><i class="fas fa-users"></i> Employee Statistics</h1>
+            <div class="header-actions">
+                <a href="/admin/dashboard" class="glass-button secondary-button">
+                    <i class="fas fa-arrow-left"></i> Back to Dashboard
+                </a>
+                <button id="export-employee-data" class="glass-button primary-button">
+                    <i class="fas fa-download"></i> Export Data
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Employee Selection -->
+    <div class="selection-section">
+        <div class="glass-card selection-card">
+            <div class="selection-header">
+                <h3><i class="fas fa-user-check"></i> Select Employee</h3>
+                <div class="selection-info">
+                    <span id="total-employees">{{ employees|length }} employees registered</span>
+                </div>
+            </div>
+            
+            <div class="selection-controls">
+                <div class="select-wrapper">
+                    <select id="employee-select" class="employee-select">
+                        <option value="">Choose an employee...</option>
+                        {% for employee in employees %}
+                        <option value="{{ employee }}">{{ employee }}</option>
+                        {% endfor %}
+                    </select>
+                    <i class="fas fa-chevron-down select-arrow"></i>
+                </div>
+                
+                <button id="load-stats" class="glass-button primary-button" disabled>
+                    <i class="fas fa-chart-bar"></i> Load Statistics
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Employee Stats Display -->
+    <div id="stats-display" class="stats-display" style="display: none;">
+        <!-- Employee Info Card -->
+        <div class="glass-card employee-info-card">
+            <div class="employee-header">
+                <div class="employee-avatar">
+                    <i class="fas fa-user-circle"></i>
+                </div>
+                <div class="employee-details">
+                    <h2 id="employee-name">Employee Name</h2>
+                    <p id="employee-status">Loading statistics...</p>
+                </div>
+                <div class="employee-score">
+                    <div class="score-circle">
+                        <span id="attendance-percentage">0%</span>
+                    </div>
+                    <small>Attendance Rate</small>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Stats Cards -->
+        <div class="employee-stats-grid">
+            <div class="glass-card stat-card">
+                <div class="stat-icon green">
+                    <i class="fas fa-calendar-check"></i>
+                </div>
+                <div class="stat-content">
+                    <h3 id="total-days">0</h3>
+                    <p>Total Days</p>
+                </div>
+            </div>
+            
+            <div class="glass-card stat-card">
+                <div class="stat-icon blue">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <div class="stat-content">
+                    <h3 id="present-days">0</h3>
+                    <p>Present Days</p>
+                </div>
+            </div>
+            
+            <div class="glass-card stat-card">
+                <div class="stat-icon orange">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <div class="stat-content">
+                    <h3 id="late-days">0</h3>
+                    <p>Late Days</p>
+                </div>
+            </div>
+            
+            <div class="glass-card stat-card">
+                <div class="stat-icon purple">
+                    <i class="fas fa-calendar-alt"></i>
+                </div>
+                <div class="stat-content">
+                    <h3 id="last-attendance">Never</h3>
+                    <p>Last Seen</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Charts Section -->
+        <div class="employee-charts-section">
+            <!-- Present vs Late Chart -->
+            <div class="glass-card chart-card">
+                <div class="chart-header">
+                    <h3><i class="fas fa-pie-chart"></i> Present vs Late</h3>
+                    <div class="chart-legend">
+                        <div class="legend-item">
+                            <div class="legend-color green"></div>
+                            <span>Present</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color orange"></div>
+                            <span>Late</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="chart-container">
+                    <canvas id="presentLateChart"></canvas>
+                </div>
+            </div>
+            
+            <!-- Monthly Attendance Chart -->
+            <div class="glass-card chart-card">
+                <div class="chart-header">
+                    <h3><i class="fas fa-chart-line"></i> Monthly Attendance Pattern</h3>
+                    <div class="chart-controls">
+                        <button class="chart-btn active" data-period="30">30 Days</button>
+                        <button class="chart-btn" data-period="7">7 Days</button>
+                    </div>
+                </div>
+                <div class="chart-container">
+                    <canvas id="monthlyChart"></canvas>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Attendance Calendar -->
+        <div class="glass-card calendar-card">
+            <div class="calendar-header">
+                <h3><i class="fas fa-calendar"></i> Attendance Calendar</h3>
+                <div class="calendar-legend">
+                    <div class="legend-item">
+                        <div class="legend-color green"></div>
+                        <span>Present</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color orange"></div>
+                        <span>Late</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color gray"></div>
+                        <span>Absent</span>
+                    </div>
+                </div>
+            </div>
+            <div id="attendance-calendar" class="attendance-calendar">
+                <!-- Calendar will be generated by JavaScript -->
+            </div>
+        </div>
+    </div>
+    
+    <!-- No Selection State -->
+    <div id="no-selection" class="no-selection">
+        <div class="glass-card empty-state-card">
+            <div class="empty-state">
+                <i class="fas fa-user-friends empty-icon"></i>
+                <h3>Select an Employee</h3>
+                <p>Choose an employee from the dropdown above to view their detailed attendance statistics and performance metrics.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+let presentLateChart, monthlyChart;
+let currentEmployeeData = null;
+
+document.addEventListener('DOMContentLoaded', function() {
+    const employeeSelect = document.getElementById('employee-select');
+    const loadStatsBtn = document.getElementById('load-stats');
+    
+    // Enable/disable load button based on selection
+    employeeSelect.addEventListener('change', function() {
+        loadStatsBtn.disabled = !this.value;
+    });
+    
+    // Load stats when button clicked
+    loadStatsBtn.addEventListener('click', function() {
+        const selectedEmployee = employeeSelect.value;
+        if (selectedEmployee) {
+            loadEmployeeStats(selectedEmployee);
+        }
+    });
+    
+    // Export functionality
+    document.getElementById('export-employee-data').addEventListener('click', exportEmployeeData);
+});
+
+function loadEmployeeStats(employeeName) {
+    // Show loading state
+    document.getElementById('employee-name').textContent = employeeName;
+    document.getElementById('employee-status').textContent = 'Loading statistics...';
+    
+    // Show stats display
+    document.getElementById('no-selection').style.display = 'none';
+    document.getElementById('stats-display').style.display = 'block';
+    
+    // Fetch employee stats
+    fetch(`/api/employee_stats/${employeeName}`)
+    .then(response => response.json())
+    .then(data => {
+        currentEmployeeData = data;
+        updateEmployeeStats(data);
+        initializeEmployeeCharts(data);
+        generateAttendanceCalendar(data.monthly_data);
+    })
+    .catch(error => {
+        console.error('Error loading employee stats:', error);
+        document.getElementById('employee-status').textContent = 'Error loading statistics';
+    });
+}
+
+function updateEmployeeStats(data) {
+    // Update employee info
+    document.getElementById('employee-status').textContent = `Last seen: ${data.last_attendance}`;
+    document.getElementById('attendance-percentage').textContent = `${Math.round(data.attendance_percentage)}%`;
+    
+    // Update stat cards
+    document.getElementById('total-days').textContent = data.total_days;
+    document.getElementById('present-days').textContent = data.present_days;
+    document.getElementById('late-days').textContent = data.late_days;
+    document.getElementById('last-attendance').textContent = data.last_attendance;
+    
+    // Update score circle color based on percentage
+    const scoreCircle = document.querySelector('.score-circle');
+    const percentage = data.attendance_percentage;
+    
+    if (percentage >= 90) {
+        scoreCircle.className = 'score-circle excellent';
+    } else if (percentage >= 75) {
+        scoreCircle.className = 'score-circle good';
+    } else if (percentage >= 60) {
+        scoreCircle.className = 'score-circle average';
+    } else {
+        scoreCircle.className = 'score-circle poor';
+    }
+}
+
+function initializeEmployeeCharts(data) {
+    // Present vs Late Pie Chart
+    const presentLateCtx = document.getElementById('presentLateChart').getContext('2d');
+    
+    if (presentLateChart) {
+        presentLateChart.destroy();
+    }
+    
+    presentLateChart = new Chart(presentLateCtx, {
+        type: 'doughnut',
+        data: {
+            labels: ['Present', 'Late'],
+            datasets: [{
+                data: [data.present_days, data.late_days],
+                backgroundColor: [
+                    'rgba(63, 185, 80, 0.8)',
+                    'rgba(210, 153, 34, 0.8)'
+                ],
+                borderColor: [
+                    'rgba(63, 185, 80, 1)',
+                    'rgba(210, 153, 34, 1)'
+                ],
+                borderWidth: 2
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false
+                }
+            },
+            cutout: '60%'
+        }
+    });
+    
+    // Monthly Attendance Chart
+    const monthlyCtx = document.getElementById('monthlyChart').getContext('2d');
+    
+    if (monthlyChart) {
+        monthlyChart.destroy();
+    }
+    
+    const monthlyData = data.monthly_data || [];
+    const dates = monthlyData.map(d => d.date);
+    const statuses = monthlyData.map(d => d.status === 'Present' ? 1 : d.status === 'Late' ? 0.5 : 0);
+    
+    monthlyChart = new Chart(monthlyCtx, {
+        type: 'bar',
+        data: {
+            labels: dates,
+            datasets: [{
+                label: 'Attendance',
+                data: statuses,
+                backgroundColor: statuses.map(s => 
+                    s === 1 ? 'rgba(63, 185, 80, 0.8)' : 
+                    s === 0.5 ? 'rgba(210, 153, 34, 0.8)' : 
+                    'rgba(248, 81, 73, 0.8)'
+                ),
+                borderColor: statuses.map(s => 
+                    s === 1 ? 'rgba(63, 185, 80, 1)' : 
+                    s === 0.5 ? 'rgba(210, 153, 34, 1)' : 
+                    'rgba(248, 81, 73, 1)'
+                ),
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false
+                }
+            },
+            scales: {
+                x: {
+                    ticks: {
+                        color: '#ffffff',
+                        maxRotation: 45
+                    },
+                    grid: {
+                        color: 'rgba(255, 255, 255, 0.1)'
+                    }
+                },
+                y: {
+                    ticks: {
+                        color: '#ffffff',
+                        callback: function(value) {
+                            return value === 1 ? 'Present' : value === 0.5 ? 'Late' : 'Absent';
+                        }
+                    },
+                    grid: {
+                        color: 'rgba(255, 255, 255, 0.1)'
+                    },
+                    min: 0,
+                    max: 1
+                }
+            }
+        }
+    });
+}
+
+function generateAttendanceCalendar(monthlyData) {
+    const calendar = document.getElementById('attendance-calendar');
+    calendar.innerHTML = '';
+    
+    // Create calendar grid
+    const today = new Date();
+    const daysToShow = 30;
+    
+    for (let i = daysToShow - 1; i >= 0; i--) {
+        const date = new Date(today);
+        date.setDate(date.getDate() - i);
+        
+        const dayElement = document.createElement('div');
+        dayElement.className = 'calendar-day';
+        
+        // Find attendance for this date
+        const dateStr = date.toISOString().split('T')[0].substring(5); // MM-DD format
+        const attendanceRecord = monthlyData.find(d => d.date === dateStr);
+        
+        if (attendanceRecord) {
+            if (attendanceRecord.status === 'Present') {
+                dayElement.classList.add('present');
+            } else if (attendanceRecord.status === 'Late') {
+                dayElement.classList.add('late');
+            }
+        } else {
+            dayElement.classList.add('absent');
+        }
+        
+        dayElement.innerHTML = `
+            <span class="day-number">${date.getDate()}</span>
+            <span class="day-status">${attendanceRecord ? attendanceRecord.status : 'Absent'}</span>
+        `;
+        
+        calendar.appendChild(dayElement);
+    }
+}
+
+function exportEmployeeData() {
+    if (!currentEmployeeData) {
+        alert('Please select an employee first');
+        return;
+    }
+    
+    const employeeName = document.getElementById('employee-select').value;
+    
+    // Create CSV content
+    const csvContent = [
+        ['Employee Statistics Report'],
+        ['Generated on:', new Date().toLocaleDateString()],
+        ['Employee:', employeeName],
+        [''],
+        ['Summary'],
+        ['Total Days:', currentEmployeeData.total_days],
+        ['Present Days:', currentEmployeeData.present_days],
+        ['Late Days:', currentEmployeeData.late_days],
+        ['Attendance Percentage:', `${Math.round(currentEmployeeData.attendance_percentage)}%`],
+        ['Last Attendance:', currentEmployeeData.last_attendance],
+        [''],
+        ['Daily Records'],
+        ['Date', 'Status']
+    ];
+    
+    // Add daily records
+    currentEmployeeData.monthly_data.forEach(record => {
+        csvContent.push([record.date, record.status]);
+    });
+    
+    // Convert to CSV string
+    const csvString = csvContent.map(row => row.join(',')).join('\n');
+    
+    // Download file
+    const blob = new Blob([csvString], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${employeeName}_attendance_report.csv`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    window.URL.revokeObjectURL(url);
+}
+</script>
+{% endblock %}
