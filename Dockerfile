@@ -27,6 +27,7 @@ RUN pip install --no-cache-dir --upgrade pip setuptools wheel
 RUN pip install --no-cache-dir cmake
 RUN pip install --no-cache-dir dlib
 RUN pip install --no-cache-dir face-recognition
+RUN pip install git+https://github.com/ageitgey/face_recognition_models
 RUN pip install --no-cache-dir -r requirements_web.txt
 
 # Copy the rest of the application
