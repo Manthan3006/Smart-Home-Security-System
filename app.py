@@ -820,5 +820,6 @@ if __name__ == '__main__':
     print("I just want to be free")
     print("I just want to be free like LUFFY")
     print("Monkey D. LUFFY")
+    print("NEW BUG FIX")
     
     app.run(debug=True, host='127.0.0.1', port=8000, threaded=True)
