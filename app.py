@@ -815,5 +815,6 @@ if __name__ == '__main__':
     print("📱 Access at: http://127.0.0.1:8000")
     print("🔐 Default admin password: admin123")
     print("=" * 50)
+    print("trigger pipeline")
     
     app.run(debug=True, host='127.0.0.1', port=8000, threaded=True)
