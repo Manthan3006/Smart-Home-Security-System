@@ -984,6 +984,7 @@ if __name__ == "__main__":
     except ImportError as e:
         print(f"Missing required package: {e}")
         print("Please install: pip install customtkinter matplotlib seaborn plotly pandas")
+        print("OOOOO")
         exit(1)
     
     # Start the application
