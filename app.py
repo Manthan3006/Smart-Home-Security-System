@@ -817,5 +817,8 @@ if __name__ == '__main__':
     print("=" * 50)
     print("trigger pipeline")
     print("new trigger pipeline")
+    print("I just want to be free")
+    print("I just want to be free like LUFFY")
+    print("Monkey D. LUFFY")
     
     app.run(debug=True, host='127.0.0.1', port=8000, threaded=True)
