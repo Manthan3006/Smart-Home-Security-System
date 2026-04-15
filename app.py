@@ -816,5 +816,6 @@ if __name__ == '__main__':
     print("🔐 Default admin password: admin123")
     print("=" * 50)
     print("trigger pipeline")
+    print("new trigger pipeline")
     
     app.run(debug=True, host='127.0.0.1', port=8000, threaded=True)
