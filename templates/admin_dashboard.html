@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Admin Dashboard - Premium Attendance System{% endblock %}
+{% block title %}Admin Dashboard - Home Security System{% endblock %}
 
 {% block extra_css %}
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -31,7 +31,7 @@
             </div>
             <div class="stat-content">
                 <h3 id="today-total">{{ stats.today_total }}</h3>
-                <p>Today's Total</p>
+                <p>Today's Entries</p>
             </div>
         </div>
         
@@ -68,10 +68,10 @@
     
     <!-- Charts Section -->
     <div class="charts-section">
-        <!-- Today's Attendance Chart -->
+        <!-- Today's Entries Chart -->
         <div class="glass-card chart-card">
             <div class="chart-header">
-                <h3><i class="fas fa-pie-chart"></i> Today's Attendance</h3>
+                <h3><i class="fas fa-pie-chart"></i> Today's Entries</h3>
                 <div class="chart-controls">
                     <button class="chart-btn active" data-chart="pie">Pie</button>
                     <button class="chart-btn" data-chart="doughnut">Doughnut</button>
@@ -85,7 +85,7 @@
         <!-- Weekly Trend Chart -->
         <div class="glass-card chart-card">
             <div class="chart-header">
-                <h3><i class="fas fa-chart-line"></i> Weekly Attendance Trend</h3>
+                <h3><i class="fas fa-chart-line"></i> Weekly Entry Trend</h3>
                 <div class="chart-controls">
                     <button class="chart-btn active" data-chart="line">Line</button>
                     <button class="chart-btn" data-chart="bar">Bar</button>
@@ -122,16 +122,16 @@
             </div>
         </div>
         
-        <!-- Recent Attendance with GPS -->
+        <!-- Recent Entries with GPS -->
         <div class="glass-card attendance-card">
             <div class="attendance-header">
-                <h3><i class="fas fa-map-marker-alt"></i> Recent Attendance (GPS)</h3>
+                <h3><i class="fas fa-map-marker-alt"></i> Recent Entries (GPS)</h3>
                 <button id="refresh-attendance" class="glass-button small-button">
                     <i class="fas fa-sync-alt"></i> Refresh
                 </button>
             </div>
             <div class="attendance-list" id="attendance-list">
-                <div class="loading-message">Loading attendance records...</div>
+                <div class="loading-message">Loading entry records...</div>
             </div>
         </div>
         
@@ -193,7 +193,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function initializeCharts() {
-    // Today's Attendance Pie Chart
+    // Today's Entries Pie Chart
     const todayCtx = document.getElementById('todayChart').getContext('2d');
     todayChart = new Chart(todayCtx, {
         type: 'pie',
@@ -372,12 +372,12 @@ function refreshStats() {
 }
 
 function exportData() {
-    addActivityItem('Export Started', 'Preparing attendance data for download', 'info');
+    addActivityItem('Export Started', 'Preparing entry data for download', 'info');
     // Implement export functionality
 }
 
 function viewReports() {
-    addActivityItem('Reports Accessed', 'Viewing detailed attendance reports', 'info');
+    addActivityItem('Reports Accessed', 'Viewing detailed entry reports', 'info');
     // Implement reports functionality
 }
 

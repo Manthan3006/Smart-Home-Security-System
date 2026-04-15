@@ -1,5 +1,5 @@
 /**
- * Premium Attendance System - JavaScript
+ * Home Security System - JavaScript
  * Modern Web Application with Glassmorphism UI
  */
 
@@ -308,7 +308,7 @@ function startBackgroundGPS() {
     
     if (gpsAttempts > MAX_GPS_ATTEMPTS) {
         console.log('📍 Max GPS attempts reached, continuing without GPS');
-        showGPSStatus('GPS unavailable - attendance still works', 'warning');
+        showGPSStatus('GPS unavailable - entry still works', 'warning');
         return;
     }
     
@@ -342,7 +342,7 @@ function startBackgroundGPS() {
                     startBackgroundGPS();
                 }, 2000);
             } else {
-                showGPSStatus('GPS failed - attendance still works', 'warning');
+                showGPSStatus('GPS failed - entry still works', 'warning');
             }
         },
         options
@@ -898,7 +898,7 @@ function exportDashboardData() {
 }
 
 function viewReports() {
-    addActivityItem('Reports Accessed', 'Viewing detailed attendance reports', 'info');
+    addActivityItem('Reports Accessed', 'Viewing detailed entry reports', 'info');
 }
 
 function systemSettings() {
@@ -917,7 +917,7 @@ function loadRecentAttendance() {
     if (!attendanceList) return;
     
     // Show loading
-    attendanceList.innerHTML = '<div class="loading-message">Loading attendance records...</div>';
+    attendanceList.innerHTML = '<div class="loading-message">Loading entry records...</div>';
     
     fetch('/api/recent_attendance')
     .then(response => response.json())

@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Premium Attendance System - Home{% endblock %}
+{% block title %}Home Security System - Home{% endblock %}
 
 {% block content %}
 <div class="landing-container">
@@ -9,7 +9,7 @@
         <div class="header-section">
             <div class="logo-container">
                 <i class="fas fa-graduation-cap logo-icon"></i>
-                <h1 class="main-title">Premium Attendance System</h1>
+                <h1 class="main-title">Home Security System</h1>
             </div>
             <p class="subtitle">Modern Face Recognition • Real-time Analytics • Secure Access</p>
         </div>
@@ -18,8 +18,8 @@
         <div class="action-buttons">
             <a href="/employee" class="glass-button primary-button">
                 <i class="fas fa-user"></i>
-                <span>Mark Attendance</span>
-                <small>Employee Mode</small>
+                <span>Mark Entry</span>
+                <small>Face Recognition Mode</small>
             </a>
             
             <a href="/admin/login" class="glass-button secondary-button">
@@ -50,7 +50,7 @@
             <div class="status-card">
                 <i class="fas fa-calendar-check"></i>
                 <div class="status-info">
-                    <span class="status-label">Today's Attendance</span>
+                    <span class="status-label">Today's Entries</span>
                     <span class="status-value" id="today-count">Loading...</span>
                 </div>
             </div>

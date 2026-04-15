@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-🎓 PREMIUM ATTENDANCE SYSTEM - SIMPLIFIED VERSION
-Modern Corporate Attendance Management with Glassmorphism UI
+🎓 HOME SECURITY SYSTEM - SIMPLIFIED VERSION
+Modern Home Security Management with Glassmorphism UI
 Handles import issues gracefully
 """
 
@@ -77,8 +77,8 @@ COLORS = {
     'accent_orange': '#D29922'
 }
 
-class SimpleAttendanceSystem:
-    """Simplified attendance system with graceful fallbacks"""
+class SimpleHomeSecuritySystem:
+    """Simplified home security system with graceful fallbacks"""
     
     def __init__(self):
         # Initialize based on available packages
@@ -89,7 +89,7 @@ class SimpleAttendanceSystem:
             self.root = tk.Tk()
             self.root.configure(bg='#2b2b2b')
         
-        self.root.title("🎓 Premium Attendance System")
+        self.root.title("🎓 Home Security System")
         self.root.geometry("1200x800")
         
         self.setup_folders()
@@ -166,7 +166,7 @@ class SimpleAttendanceSystem:
         self.load_today_attendance()
     
     def load_today_attendance(self):
-        """Load today's attendance"""
+        """Load today's entries"""
         today = datetime.now().strftime("%Y-%m-%d")
         filename = os.path.join(ATTENDANCE_FOLDER, f"attendance_{today}.csv")
         
@@ -179,7 +179,7 @@ class SimpleAttendanceSystem:
                         if len(row) >= 1:
                             self.attendance_today.add(row[0])
             except Exception as e:
-                print(f"Error loading attendance: {e}")
+                print(f"Error loading entries: {e}")
     
     def mark_attendance(self, name, status):
         """Mark attendance in CSV"""
@@ -203,10 +203,10 @@ class SimpleAttendanceSystem:
                     status
                 ])
             
-            print(f"✅ Attendance marked: {name} - {status}")
+            print(f"✅ Entry marked: {name} - {status}")
             return True
         except Exception as e:
-            print(f"❌ Error marking attendance: {e}")
+            print(f"❌ Error marking entry: {e}")
             return False
     
     def setup_ui(self):
@@ -250,7 +250,7 @@ class SimpleAttendanceSystem:
         # Title
         title = self.create_label(
             main_frame,
-            "🎓 Premium Attendance System",
+            "🎓 Home Security System",
             font=("Arial", 32, "bold")
         )
         title.pack(pady=(50, 30))
@@ -268,7 +268,7 @@ class SimpleAttendanceSystem:
         
         employee_btn = self.create_button(
             button_frame,
-            "👤 Employee Mode",
+            "👤 Security Mode",
             self.show_employee_mode,
             width=250
         )
@@ -343,7 +343,7 @@ class SimpleAttendanceSystem:
         header_frame = self.create_frame()
         header_frame.pack(fill="x", pady=(0, 20))
         
-        title = self.create_label(header_frame, "👤 Employee Attendance", 
+        title = self.create_label(header_frame, "👤 Face Recognition Entry", 
                                  font=("Arial", 24, "bold"))
         title.pack(side="left", padx=20, pady=15)
         
@@ -409,7 +409,7 @@ class SimpleAttendanceSystem:
         stats_text = f"""
 📊 ATTENDANCE STATISTICS
 
-📅 Today's Attendance: {today_count}
+📅 Today's Entries: {today_count}
 👥 Total Registered: {total_employees}
 ⏰ Reporting Time: {REPORTING_TIME.strftime('%H:%M')}
 📁 Data Folder: {ATTENDANCE_FOLDER}
@@ -475,7 +475,7 @@ class SimpleAttendanceSystem:
                    labels=['Present', 'Not Present'],
                    colors=['#3FB950', '#F85149'],
                    autopct='%1.1f%%')
-            ax1.set_title("Today's Attendance", color='white')
+            ax1.set_title("Today's Entries", color='white')
         
         # Employee count bar
         if self.known_face_names:
@@ -606,7 +606,7 @@ class SimpleAttendanceSystem:
 
 def main():
     """Main function"""
-    print("🎓 Premium Attendance System - Simplified Version")
+    print("🎓 Home Security System - Simplified Version")
     print("=" * 50)
     
     # Check available packages
@@ -638,7 +638,7 @@ def main():
     print("=" * 50)
     
     try:
-        app = SimpleAttendanceSystem()
+        app = SimpleHomeSecuritySystem()
         app.run()
     except Exception as e:
         print(f"❌ Error starting application: {e}")

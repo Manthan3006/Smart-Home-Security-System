@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-🎓 PREMIUM ATTENDANCE SYSTEM - WEB APPLICATION
+🎓 HOME SECURITY SYSTEM - WEB APPLICATION
 Flask Backend with Face Recognition & Analytics
 """
 
@@ -27,7 +27,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 app = Flask(__name__)
 app.secret_key = 'your-secret-key-change-this'  # Change this in production
 
-# Attendance System Configuration
+# Home Security System Configuration
 REPORTING_TIME = time(10, 0)  # 10:00 AM
 ATTENDANCE_FOLDER = "attendance_records"
 PICS_FOLDER = "Pics"
@@ -39,8 +39,8 @@ RESIZE_FACTOR = 0.5
 FACE_RECOGNITION_TOLERANCE = 0.6
 MAX_FACES_PER_FRAME = 5
 
-class AttendanceSystem:
-    """Core attendance system logic"""
+class HomeSecuritySystem:
+    """Core home security system logic"""
     
     def __init__(self):
         self.setup_folders()
@@ -120,7 +120,7 @@ class AttendanceSystem:
         return os.path.join(ATTENDANCE_FOLDER, f"attendance_{date_str}.csv")
     
     def load_today_attendance(self):
-        """Load today's attendance"""
+        """Load today's entries"""
         filename = self.get_attendance_filename()
         attendance_today = set()
         
@@ -133,7 +133,7 @@ class AttendanceSystem:
                         if len(row) >= 1:
                             attendance_today.add(row[0])
             except Exception as e:
-                print(f"Error loading attendance: {e}")
+                print(f"Error loading entries: {e}")
         
         return attendance_today
     
@@ -162,14 +162,14 @@ class AttendanceSystem:
                 ])
             
             location_info = f" at {latitude}, {longitude}" if latitude and longitude else " (location not available)"
-            print(f"✅ Attendance marked: {name} - {status}{location_info}")
+            print(f"✅ Entry marked: {name} - {status}{location_info}")
             return True
         except Exception as e:
-            print(f"❌ Error marking attendance: {e}")
+            print(f"❌ Error marking entry: {e}")
             return False
     
     def get_attendance_status(self, current_time):
-        """Determine attendance status"""
+        """Determine entry status"""
         return "Present" if current_time <= REPORTING_TIME else "Late"
     
     def start_camera(self):
@@ -475,8 +475,8 @@ class AttendanceSystem:
             'monthly_data': list(reversed(monthly_data))
         }
 
-# Initialize attendance system
-attendance_system = AttendanceSystem()
+# Initialize home security system
+attendance_system = HomeSecuritySystem()
 
 # Routes
 @app.route('/')
@@ -809,7 +809,7 @@ def video_feed():
     return Response(generate(), mimetype='multipart/x-mixed-replace; boundary=frame')
 
 if __name__ == '__main__':
-    print("🎓 Premium Attendance System - Web Application")
+    print("🏠 Home Security System - Web Application")
     print("=" * 50)
     print("🚀 Starting Flask server...")
     print("📱 Access at: http://127.0.0.1:8000")

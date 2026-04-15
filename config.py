@@ -1,6 +1,6 @@
 """
-🎓 PREMIUM ATTENDANCE SYSTEM CONFIGURATION
-Customize your attendance system settings here
+🎓 HOME SECURITY SYSTEM CONFIGURATION
+Customize your home security system settings here
 """
 
 from datetime import time
@@ -99,7 +99,7 @@ THREAD_TIMEOUT = 30
 # Logging settings
 ENABLE_LOGGING = True
 LOG_LEVEL = "INFO"  # DEBUG, INFO, WARNING, ERROR
-LOG_FILE = "attendance_system.log"
+LOG_FILE = "home_security.log"
 
 # Backup settings
 AUTO_BACKUP = True

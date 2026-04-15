@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-🎓 PREMIUM ATTENDANCE SYSTEM LAUNCHER
-Launch script for the modern glassmorphism attendance system
+🎓 HOME SECURITY SYSTEM LAUNCHER
+Launch script for the modern glassmorphism home security system
 """
 
 import sys
@@ -55,7 +55,7 @@ def check_and_install_requirements():
 
 def main():
     """Main launcher function"""
-    print("🎓 Premium Attendance System")
+    print("🎓 Home Security System")
     print("=" * 50)
     
     # Check requirements
@@ -63,11 +63,11 @@ def main():
         print("Please install required packages and try again.")
         return
     
-    # Import and run the attendance system
+    # Import and run the home security system
     try:
-        from attendance_ui import AttendanceSystemUI
+        from home_security_ui import HomeSecurityUI
         
-        print("🚀 Starting Premium Attendance System...")
+        print("🚀 Starting Home Security System...")
         print("Features:")
         print("  ✨ Glassmorphism UI Design")
         print("  📊 Admin Analytics Dashboard")
@@ -78,12 +78,12 @@ def main():
         print("=" * 50)
         
         # Start the application
-        app = AttendanceSystemUI()
+        app = HomeSecurityUI()
         app.run()
         
     except ImportError as e:
-        print(f"❌ Error importing attendance system: {e}")
-        print("Please ensure attendance_ui.py is in the same directory.")
+        print(f"❌ Error importing home security system: {e}")
+        print("Please ensure home_security_ui.py is in the same directory.")
     except Exception as e:
         print(f"❌ Error starting application: {e}")
 

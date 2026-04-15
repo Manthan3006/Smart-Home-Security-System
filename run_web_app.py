@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-🎓 PREMIUM ATTENDANCE SYSTEM - WEB APPLICATION LAUNCHER
-Professional Flask-based attendance management system
+🎓 HOME SECURITY SYSTEM - WEB APPLICATION LAUNCHER
+Professional Flask-based home security management system
 """
 
 import sys
@@ -76,14 +76,14 @@ def check_face_images():
 
 def main():
     """Main launcher function"""
-    print("🎓 Premium Attendance System - Web Application")
+    print("🏠 Home Security System - Web Application")
     print("=" * 60)
-    print("🌐 Modern Flask-based attendance management")
+    print("🌐 Modern Flask-based home security management")
     print("✨ Features:")
     print("  • Glassmorphism UI Design")
     print("  • Real-time Face Recognition")
     print("  • Admin Analytics Dashboard")
-    print("  • Employee Statistics")
+    print("  • Person Statistics")
     print("  • Secure Role-based Access")
     print("=" * 60)
     

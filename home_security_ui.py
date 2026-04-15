@@ -1,6 +1,6 @@
 """
-🎓 PREMIUM ATTENDANCE SYSTEM - GLASSMORPHISM UI
-Modern Corporate Attendance Management with Analytics Dashboard
+🎓 HOME SECURITY SYSTEM - GLASSMORPHISM UI
+Modern Home Security Management with Analytics Dashboard
 
 Features:
 - Glassmorphism UI Design
@@ -41,7 +41,7 @@ from typing import Dict, List, Tuple, Optional
 ctk.set_appearance_mode("dark")
 ctk.set_default_color_theme("blue")
 
-# Attendance System Configuration
+# Home Security System Configuration
 REPORTING_TIME = time(10, 0)
 ATTENDANCE_FOLDER = "attendance_records"
 PICS_FOLDER = "Pics"
@@ -66,8 +66,8 @@ RESIZE_FACTOR = 0.5
 FACE_RECOGNITION_TOLERANCE = 0.6
 MAX_FACES_PER_FRAME = 5
 
-class AttendanceDataManager:
-    """Handles all data operations for attendance system"""
+class HomeSecurityDataManager:
+    """Handles all data operations for home security system"""
     
     def __init__(self):
         self.setup_folders()
@@ -203,7 +203,7 @@ class ModernButton(ctk.CTkButton):
         
         super().__init__(parent, **kwargs)
 
-class AttendanceChart:
+class HomeSecurityChart:
     """Handles chart creation and embedding"""
     
     @staticmethod
@@ -221,10 +221,10 @@ class AttendanceChart:
             labels = ['Present', 'Late']
             colors = ['#3FB950', '#D29922']
             ax1.pie(sizes, labels=labels, colors=colors, autopct='%1.1f%%', startangle=90)
-            ax1.set_title("Today's Attendance", color='white', fontsize=12)
+            ax1.set_title("Today's Entries", color='white', fontsize=12)
         else:
             ax1.text(0.5, 0.5, 'No data for today', ha='center', va='center', color='white')
-            ax1.set_title("Today's Attendance", color='white', fontsize=12)
+            ax1.set_title("Today's Entries", color='white', fontsize=12)
         
         # Weekly trend line chart
         if not stats['weekly_trend'].empty:
@@ -244,7 +244,7 @@ class AttendanceChart:
             attendance_counts = stats['employee_summary']['Total_Days'][:10]
             
             bars = ax3.bar(range(len(employees)), attendance_counts, color='#58A6FF')
-            ax3.set_title('Employee Attendance (Top 10)', color='white', fontsize=12)
+            ax3.set_title('Face Recognition Entry (Top 10)', color='white', fontsize=12)
             ax3.set_xticks(range(len(employees)))
             ax3.set_xticklabels(employees, rotation=45, ha='right', color='white')
             ax3.tick_params(colors='white')
@@ -341,7 +341,7 @@ class FaceRecognitionEngine:
     
     def load_today_attendance(self):
         """Load today's attendance to avoid duplicates"""
-        data_manager = AttendanceDataManager()
+        data_manager = HomeSecurityDataManager()
         filename = data_manager.get_attendance_filename()
         self.attendance_today = set()
         
@@ -358,7 +358,7 @@ class FaceRecognitionEngine:
     
     def mark_attendance(self, name, status):
         """Mark attendance in CSV file"""
-        data_manager = AttendanceDataManager()
+        data_manager = HomeSecurityDataManager()
         filename = data_manager.get_attendance_filename()
         now = datetime.now()
         
@@ -423,17 +423,17 @@ class AdminManager:
         self.admin_password_hash = hashlib.sha256(new_password.encode()).hexdigest()
         self.save_admin_config()
 
-class AttendanceSystemUI:
+class HomeSecurityUI:
     """Main UI class with glassmorphism design"""
     
     def __init__(self):
         self.root = ctk.CTk()
-        self.root.title("🎓 Premium Attendance System")
+        self.root.title("🎓 Home Security System")
         self.root.geometry("1400x900")
         self.root.configure(fg_color=GLASSMORPHISM_COLORS['primary_bg'])
         
         # Initialize managers
-        self.data_manager = AttendanceDataManager()
+        self.data_manager = HomeSecurityDataManager()
         self.face_engine = FaceRecognitionEngine()
         self.admin_manager = AdminManager()
         
@@ -463,7 +463,7 @@ class AttendanceSystemUI:
         # Title
         title_label = ctk.CTkLabel(
             self.current_frame,
-            text="🎓 Premium Attendance System",
+            text="🎓 Home Security System",
             font=ctk.CTkFont(size=36, weight="bold"),
             text_color=GLASSMORPHISM_COLORS['text_primary']
         )
@@ -482,10 +482,10 @@ class AttendanceSystemUI:
         button_frame = GlassmorphismFrame(self.current_frame)
         button_frame.pack(pady=20)
         
-        # Employee Mode Button
+        # Security Mode Button
         employee_btn = ModernButton(
             button_frame,
-            text="👤 Employee Mode",
+            text="👤 Security Mode",
             width=250,
             height=60,
             font=ctk.CTkFont(size=18, weight="bold"),
@@ -605,7 +605,7 @@ class AttendanceSystemUI:
         
         title_label = ctk.CTkLabel(
             header_frame,
-            text="👤 Employee Attendance",
+            text="👤 Face Recognition Entry",
             font=ctk.CTkFont(size=28, weight="bold"),
             text_color=GLASSMORPHISM_COLORS['text_primary']
         )
@@ -836,7 +836,7 @@ class AttendanceSystemUI:
         charts_frame = GlassmorphismFrame(self.current_frame)
         charts_frame.pack(fill="both", expand=True)
         
-        chart_widget = AttendanceChart.create_attendance_overview(charts_frame, self.data_manager)
+        chart_widget = HomeSecurityChart.create_attendance_overview(charts_frame, self.data_manager)
         chart_widget.pack(fill="both", expand=True, padx=20, pady=20)
     
     def create_stat_card(self, parent, title, value, color):
@@ -949,7 +949,7 @@ class AttendanceSystemUI:
         
         # Employee chart
         if stats['total_days'] > 0:
-            chart_widget = AttendanceChart.create_employee_chart(
+            chart_widget = HomeSecurityChart.create_employee_chart(
                 self.employee_stats_frame, 
                 employee_name, 
                 self.data_manager
@@ -988,5 +988,5 @@ if __name__ == "__main__":
         exit(1)
     
     # Start the application
-    app = AttendanceSystemUI()
+    app = HomeSecurityUI()
     app.run()

@@ -1,4 +1,4 @@
-# Premium Attendance System - Web Application Requirements
+# Home Security System - Web Application Requirements
 
 # Core Web Framework
 Flask>=2.3.0
