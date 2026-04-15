@@ -29,7 +29,7 @@ app.secret_key = 'your-secret-key-change-this'  # Change this in production
 
 # Home Security System Configuration
 REPORTING_TIME = time(10, 0)  # 10:00 AM
-ATTENDANCE_FOLDER = "attendance_records"
+ATTENDANCE_FOLDER = "security_reports"
 PICS_FOLDER = "Pics"
 ADMIN_CONFIG_FILE = "admin_config.json"
 
@@ -117,7 +117,7 @@ class HomeSecuritySystem:
         if date is None:
             date = datetime.now()
         date_str = date.strftime("%Y-%m-%d")
-        return os.path.join(ATTENDANCE_FOLDER, f"attendance_{date_str}.csv")
+        return os.path.join(ATTENDANCE_FOLDER, f"security_report_{date_str}.csv")
     
     def load_today_attendance(self):
         """Load today's entries"""

@@ -55,7 +55,7 @@ def check_and_install_requirements():
 
 def setup_directories():
     """Create necessary directories"""
-    directories = ['Pics', 'attendance_records', 'static/images']
+    directories = ['Pics', 'security_reports', 'static/images']
     
     for directory in directories:
         if not os.path.exists(directory):

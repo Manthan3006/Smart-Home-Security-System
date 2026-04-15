@@ -56,7 +56,7 @@ if CTK_AVAILABLE:
     ctk.set_default_color_theme("blue")
 
 REPORTING_TIME = time(10, 0)
-ATTENDANCE_FOLDER = "attendance_records"
+ATTENDANCE_FOLDER = "security_reports"
 PICS_FOLDER = "Pics"
 ADMIN_CONFIG_FILE = "admin_config.json"
 
@@ -168,7 +168,7 @@ class SimpleHomeSecuritySystem:
     def load_today_attendance(self):
         """Load today's entries"""
         today = datetime.now().strftime("%Y-%m-%d")
-        filename = os.path.join(ATTENDANCE_FOLDER, f"attendance_{today}.csv")
+        filename = os.path.join(ATTENDANCE_FOLDER, f"security_report_{today}.csv")
         
         if os.path.exists(filename):
             try:
@@ -184,7 +184,7 @@ class SimpleHomeSecuritySystem:
     def mark_attendance(self, name, status):
         """Mark attendance in CSV"""
         today = datetime.now().strftime("%Y-%m-%d")
-        filename = os.path.join(ATTENDANCE_FOLDER, f"attendance_{today}.csv")
+        filename = os.path.join(ATTENDANCE_FOLDER, f"security_report_{today}.csv")
         now = datetime.now()
         
         file_exists = os.path.exists(filename)

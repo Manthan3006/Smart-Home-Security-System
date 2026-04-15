@@ -7,7 +7,7 @@ from datetime import time
 
 # ==================== ATTENDANCE SETTINGS ====================
 REPORTING_TIME = time(10, 0)  # 10:00 AM - Change as needed
-ATTENDANCE_FOLDER = "attendance_records"
+ATTENDANCE_FOLDER = "security_reports"
 PICS_FOLDER = "Pics"
 ADMIN_CONFIG_FILE = "admin_config.json"
 

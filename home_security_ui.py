@@ -43,7 +43,7 @@ ctk.set_default_color_theme("blue")
 
 # Home Security System Configuration
 REPORTING_TIME = time(10, 0)
-ATTENDANCE_FOLDER = "attendance_records"
+ATTENDANCE_FOLDER = "security_reports"
 PICS_FOLDER = "Pics"
 ADMIN_CONFIG_FILE = "admin_config.json"
 
@@ -83,7 +83,7 @@ class HomeSecurityDataManager:
         if date is None:
             date = datetime.now()
         date_str = date.strftime("%Y-%m-%d")
-        return os.path.join(ATTENDANCE_FOLDER, f"attendance_{date_str}.csv")
+        return os.path.join(ATTENDANCE_FOLDER, f"security_report_{date_str}.csv")
     
     def load_attendance_data(self, days_back=30) -> pd.DataFrame:
         """Load attendance data from CSV files"""
