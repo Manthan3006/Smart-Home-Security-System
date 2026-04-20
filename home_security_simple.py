@@ -642,7 +642,7 @@ def main():
         app.run()
     except Exception as e:
         print(f"❌ Error starting application: {e}")
-        
+        print("Please check that all required packages are installed.")
         
 if __name__ == "__main__":
     main()
