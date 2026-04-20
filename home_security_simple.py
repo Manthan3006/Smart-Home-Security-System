@@ -631,7 +631,6 @@ def main():
         print("\nThe system will run with reduced functionality.")
         print("To install missing packages:")
         print("pip install customtkinter opencv-python face-recognition pandas matplotlib seaborn")
-        print()
     
     print("🚀 Starting system...")
     print("Default admin password: admin123")
