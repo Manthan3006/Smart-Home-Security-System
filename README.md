@@ -1,4 +1,4 @@
-# 🎓 Premium Attendance System
+# 🎓 Premium Smart Home Security System
 
 A modern, corporate-grade attendance management system with **Glassmorphism UI**, **Real-time Face Recognition**, and **Advanced Analytics Dashboard**.
 
